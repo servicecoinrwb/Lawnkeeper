@@ -293,8 +293,15 @@ input[type=range]::-moz-range-thumb{
       <div class="field">
         <label for="head">Sprinkler type</label>
         <select id="head">
+          <optgroup label="Aiper IrriSense 2 — 6.9 GPM">
+            <option value="0.14" selected>Full coverage, ~4,800 sq ft — 0.14 in/hr</option>
+            <option value="0.20">Wide zone, ~3,300 sq ft — 0.20 in/hr</option>
+            <option value="0.28">Half zone, ~2,400 sq ft — 0.28 in/hr</option>
+            <option value="0.40">Quarter zone, ~1,650 sq ft — 0.40 in/hr</option>
+            <option value="0.55">Narrow strip, ~1,200 sq ft — 0.55 in/hr</option>
+          </optgroup>
           <option value="1.5">Fixed spray head — 1.5 in/hr</option>
-          <option value="0.45" selected>Rotary nozzle (MP) — 0.45 in/hr</option>
+          <option value="0.45">Rotary nozzle (MP) — 0.45 in/hr</option>
           <option value="0.35">Gear rotor — 0.35 in/hr</option>
           <option value="0.30">Impact head — 0.30 in/hr</option>
           <option value="0.80">Oscillating hose sprinkler — 0.8 in/hr</option>
@@ -316,7 +323,7 @@ input[type=range]::-moz-range-thumb{
           <label for="mins" style="margin:0">Run time</label>
           <div class="runval" id="minsOut">45<span>min</span></div>
         </div>
-        <input type="range" id="mins" min="5" max="120" step="5" value="45">
+        <input type="range" id="mins" min="5" max="300" step="5" value="200">
       </div>
 
       <dl class="readout">
@@ -335,6 +342,8 @@ input[type=range]::-moz-range-thumb{
   </div>
 
   <p class="how"><strong>How this works.</strong> Applied inches = precipitation rate × run time. Depth = applied inches × the soil's spread factor (clay ≈5 in of wetting per inch applied, loam ≈7, sand ≈12). Cycles = applied ÷ the most the soil can take in one pass before it starts running off. These are single-soak numbers from dry soil — if you watered two days ago the profile is already partly charged and you'll reach depth faster. The screwdriver is the real instrument. This is the estimate.</p>
+
+  <p class="how"><strong>Aiper IrriSense 2 note.</strong> The unit puts out 26 L/min (6.9 GPM) at 45 psi. Precipitation rate = 96.3 × GPM ÷ square feet covered, so the rate depends on how big a map you point it at — full 4,800 sq ft spread gives 0.14 in/hr, a quarter of that gives 0.40 in/hr. At full coverage it applies water slower than clay absorbs it, so runoff is a non-issue and the whole depth goes down in one uninterrupted pass — no cycle-and-soak needed. Total time, though, is set by gallons and not by zoning: one head at one flow rate means zones run back to back, so carving the lawn into more maps doesn't shorten the session. Shortcut for planning: <strong>minutes ≈ square feet × inches ÷ 11</strong>. Zoning is for giving shade, full sun, and beds different depths — not for saving time. If the app takes a target depth directly, use that and ignore the slider.</p>
 </section>
 
 <!-- ══ 2. TIME OF DAY ══════════════════════════ -->
@@ -519,7 +528,9 @@ input[type=range]::-moz-range-thumb{
     var cycles  = Math.max(1, Math.ceil(applied / s.maxPass));
     var week    = applied * 2;
 
-    $("minsOut").innerHTML = m + '<span>min</span>';
+    $("minsOut").innerHTML = m >= 60
+      ? (m/60).toFixed(m % 60 === 0 ? 0 : 1) + '<span>hr</span>'
+      : m + '<span>min</span>';
     $("oApplied").textContent = applied.toFixed(2) + '"';
     $("oDepth").textContent   = depth.toFixed(1) + '"';
     $("oIntake").textContent  = s.intake.toFixed(2) + ' in/hr';
