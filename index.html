@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Soak — lawn watering, Metro Detroit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pit:#12160e;
+  --soil:#1e2317;
+  --soil-2:#282e1e;
+  --line:#3b432c;
+  --clay:#8a7350;
+  --turf:#8fbb52;
+  --turf-dim:#5c7a36;
+  --water:#4fa3d9;
+  --bone:#e9e4d3;
+  --mute:#9aa088;
+  --alert:#cf6a2e;
+  --ff-d:"Bricolage Grotesque",system-ui,sans-serif;
+  --ff-b:"Instrument Sans",system-ui,sans-serif;
+  --ff-m:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--pit);
+  color:var(--bone);
+  font-family:var(--ff-b);
+  font-size:16px;
+  line-height:1.55;
+  padding:0 20px 100px;
+}
+.wrap{max-width:1080px;margin:0 auto}
+
+/* ── masthead ─────────────────────────────── */
+.mast{padding:44px 0 30px;border-bottom:1px solid var(--line)}
+.mast h1{
+  font-family:var(--ff-d);
+  font-weight:800;
+  font-size:clamp(2.6rem,9vw,4.6rem);
+  line-height:.9;
+  letter-spacing:-.035em;
+}
+.mast h1 em{font-style:normal;color:var(--turf)}
+.mast p{
+  font-family:var(--ff-m);
+  font-size:.74rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--mute);
+  margin-top:14px;
+}
+
+/* ── section chrome ───────────────────────── */
+.sec{padding:52px 0;border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-family:var(--ff-m);
+  font-size:.68rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--turf-dim);
+  margin-bottom:10px;
+}
+.sec h2{
+  font-family:var(--ff-d);
+  font-weight:600;
+  font-size:clamp(1.5rem,4vw,2.1rem);
+  letter-spacing:-.02em;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.lede{color:var(--mute);max-width:60ch;font-size:.95rem}
+.how{
+  font-family:var(--ff-m);
+  font-size:.7rem;
+  color:var(--mute);
+  line-height:1.6;
+  border-left:2px solid var(--line);
+  padding-left:12px;
+  margin-top:20px;
+}
+
+/* ── hero calculator ──────────────────────── */
+.rig{display:grid;grid-template-columns:300px 1fr;gap:38px;margin-top:30px;align-items:start}
+@media(max-width:760px){.rig{grid-template-columns:1fr;gap:26px}}
+
+.profile{background:var(--soil);border:1px solid var(--line);border-radius:3px;padding:14px}
+.profile svg{width:100%;height:auto;display:block}
+
+.ctrls{display:flex;flex-direction:column;gap:22px}
+.field label{
+  display:block;
+  font-family:var(--ff-m);
+  font-size:.68rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--mute);
+  margin-bottom:8px;
+}
+select,input[type=range]{width:100%;font-family:var(--ff-m)}
+select{
+  background:var(--soil-2);
+  color:var(--bone);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:11px 12px;
+  font-size:.9rem;
+  appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 52%,calc(100% - 13px) 52%;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--turf);outline-offset:2px}
+
+input[type=range]{
+  appearance:none;height:26px;background:transparent;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--line);border-radius:2px}
+input[type=range]::-moz-range-track{height:4px;background:var(--line);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--turf);border:3px solid var(--pit);margin-top:-8px;
+}
+input[type=range]::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;border:3px solid var(--pit);background:var(--turf)
+}
+.runline{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+.runval{font-family:var(--ff-d);font-weight:800;font-size:2rem;letter-spacing:-.02em}
+.runval span{font-family:var(--ff-m);font-weight:400;font-size:.8rem;color:var(--mute);margin-left:4px}
+
+.readout{border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.rrow{display:flex;justify-content:space-between;gap:16px;padding:13px 16px;border-bottom:1px solid var(--line);font-size:.9rem}
+.rrow:last-child{border-bottom:0}
+.rrow dt{color:var(--mute);font-size:.82rem}
+.rrow dd{font-family:var(--ff-m);font-weight:600;text-align:right}
+
+.verdict{
+  border-radius:3px;padding:16px 18px;font-size:.92rem;line-height:1.5;
+  border:1px solid;
+}
+.verdict strong{font-family:var(--ff-d);font-weight:800;display:block;font-size:1.05rem;margin-bottom:4px;letter-spacing:-.01em}
+.v-good{border-color:var(--turf-dim);background:rgba(143,187,82,.09);color:#dbe9c4}
+.v-warn{border-color:var(--alert);background:rgba(207,106,46,.1);color:#f2d3bd}
+.v-info{border-color:var(--water);background:rgba(79,163,217,.1);color:#c9e2f2}
+
+/* ── clock bands ──────────────────────────── */
+.clock{margin-top:28px;display:flex;flex-direction:column;gap:2px}
+.band{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:stretch}
+@media(max-width:620px){.band{grid-template-columns:74px 1fr;gap:10px}}
+.band-t{
+  font-family:var(--ff-m);font-size:.74rem;color:var(--mute);
+  display:flex;align-items:center;justify-content:flex-end;text-align:right;
+}
+.band-b{padding:14px 16px;border-left:4px solid;background:var(--soil)}
+.band-b h4{font-family:var(--ff-d);font-weight:600;font-size:.98rem;margin-bottom:3px}
+.band-b p{font-size:.85rem;color:var(--mute);line-height:1.5}
+.band-b .tag{
+  font-family:var(--ff-m);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  float:right;margin-left:12px;padding:2px 0;
+}
+.b-best{border-color:var(--turf)}   .b-best .tag{color:var(--turf)}
+.b-ok{border-color:var(--clay)}     .b-ok .tag{color:var(--clay)}
+.b-bad{border-color:var(--alert)}   .b-bad .tag{color:var(--alert)}
+
+/* ── tables ───────────────────────────────── */
+.tbl{width:100%;border-collapse:collapse;margin-top:24px;font-size:.9rem}
+.tbl th{
+  font-family:var(--ff-m);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--mute);text-align:left;padding:0 14px 10px 0;border-bottom:1px solid var(--line);font-weight:500;
+}
+.tbl td{padding:13px 14px 13px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr.hi td{background:rgba(143,187,82,.06)}
+.tbl tr.hi td:first-child{box-shadow:inset 3px 0 0 var(--turf)}
+.tbl tr.hi td:first-child{padding-left:12px}
+.num{font-family:var(--ff-m);font-weight:600;white-space:nowrap}
+.note{color:var(--mute);font-size:.82rem}
+@media(max-width:620px){
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl thead{display:none}
+  .tbl tr{border-bottom:1px solid var(--line);padding:14px 0}
+  .tbl td{border:0;padding:2px 0}
+  .tbl tr.hi td:first-child{box-shadow:none;padding-left:0;color:var(--turf)}
+}
+
+/* ── probe log ────────────────────────────── */
+.probe-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pb{
+  font-family:var(--ff-m);font-size:.82rem;
+  background:var(--soil-2);color:var(--bone);
+  border:1px solid var(--line);border-radius:3px;
+  padding:11px 15px;cursor:pointer;transition:border-color .15s,color .15s;
+}
+.pb:hover{border-color:var(--turf);color:var(--turf)}
+.pb.clear{margin-left:auto;color:var(--mute)}
+.pb.clear:hover{border-color:var(--alert);color:var(--alert)}
+.log{margin-top:20px;border:1px solid var(--line);border-radius:3px}
+.log-empty{padding:22px 18px;color:var(--mute);font-size:.88rem;line-height:1.55}
+.log-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.88rem}
+.log-row:last-child{border-bottom:0}
+.log-row .d{font-family:var(--ff-m);color:var(--mute);font-size:.8rem}
+.log-row .depth{font-family:var(--ff-m);font-weight:600}
+.log-row .call{font-family:var(--ff-m);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+.call-water{color:var(--water)}
+.call-skip{color:var(--turf)}
+
+/* ── calendar ─────────────────────────────── */
+.cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:26px}
+.cal>div{background:var(--soil);padding:18px}
+.cal h4{font-family:var(--ff-m);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--turf);margin-bottom:8px}
+.cal p{font-size:.85rem;color:var(--mute);line-height:1.55}
+.cal .now{background:var(--soil-2)}
+.cal .now h4{color:var(--alert)}
+
+.foot{padding:36px 0;font-family:var(--ff-m);font-size:.7rem;color:var(--mute);line-height:1.8}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <h1>Deep<br><em>Soak</em></h1>
+  <p>Lawn watering · Metro Detroit clay · cool-season turf</p>
+</header>
+
+<!-- ══ 1. SOIL PROFILE CALCULATOR ══════════════ -->
+<section class="sec">
+  <div class="eyebrow">Where the water actually goes</div>
+  <h2>Run-time to root depth</h2>
+  <p class="lede">Minutes on the timer tell you nothing. Inches applied tell you nothing either, until you know what the soil does with them. This shows the wetting front.</p>
+
+  <div class="rig">
+    <div class="profile">
+      <svg viewBox="0 0 300 480" role="img" aria-label="Soil cross-section showing how deep water reaches">
+        <defs>
+          <linearGradient id="wet" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4fa3d9" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="#4fa3d9" stop-opacity=".16"/>
+          </linearGradient>
+        </defs>
+
+        <!-- soil body -->
+        <rect x="40" y="60" width="230" height="380" fill="#2e2a1c"/>
+        <!-- horizon banding -->
+        <rect x="40" y="60"  width="230" height="34" fill="#3a3422"/>
+        <rect x="40" y="200" width="230" height="240" fill="#292415"/>
+
+        <!-- wetting front -->
+        <rect id="wetRect" x="40" y="60" width="230" height="0" fill="url(#wet)"/>
+        <line id="wetLine" x1="40" y1="60" x2="270" y2="60" stroke="#4fa3d9" stroke-width="2"/>
+
+        <!-- root zone target band -->
+        <rect x="40" y="168.6" width="230" height="54.3" fill="none" stroke="#8fbb52" stroke-width="1" stroke-dasharray="3 3" opacity=".75"/>
+        <text x="264" y="199" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#8fbb52" letter-spacing="1">ROOT ZONE</text>
+
+        <!-- grass -->
+        <g stroke="#8fbb52" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <path d="M56 60 C54 44 60 34 58 24"/>  <path d="M76 60 C80 46 74 36 78 26"/>
+          <path d="M96 60 C93 42 99 32 96 20"/>  <path d="M118 60 C122 46 116 34 120 28"/>
+          <path d="M140 60 C137 44 143 32 140 22"/><path d="M162 60 C166 46 160 36 164 26"/>
+          <path d="M184 60 C181 42 187 34 184 24"/><path d="M206 60 C210 46 204 34 208 28"/>
+          <path d="M228 60 C225 44 231 32 228 22"/><path d="M250 60 C254 46 248 36 252 26"/>
+        </g>
+        <line x1="40" y1="60" x2="270" y2="60" stroke="#4a5238" stroke-width="1.5"/>
+
+        <!-- depth ruler -->
+        <g font-family="IBM Plex Mono" font-size="10" fill="#9aa088">
+          <line x1="34" y1="60" x2="40" y2="60" stroke="#4a5238"/><text x="30" y="63" text-anchor="end">0"</text>
+          <line x1="34" y1="114.3" x2="40" y2="114.3" stroke="#4a5238"/><text x="30" y="117" text-anchor="end">2"</text>
+          <line x1="34" y1="168.6" x2="40" y2="168.6" stroke="#4a5238"/><text x="30" y="172" text-anchor="end">4"</text>
+          <line x1="34" y1="222.9" x2="40" y2="222.9" stroke="#4a5238"/><text x="30" y="226" text-anchor="end">6"</text>
+          <line x1="34" y1="277.1" x2="40" y2="277.1" stroke="#4a5238"/><text x="30" y="280" text-anchor="end">8"</text>
+          <line x1="34" y1="331.4" x2="40" y2="331.4" stroke="#4a5238"/><text x="30" y="335" text-anchor="end">10"</text>
+          <line x1="34" y1="385.7" x2="40" y2="385.7" stroke="#4a5238"/><text x="30" y="389" text-anchor="end">12"</text>
+        </g>
+
+        <!-- runoff marker -->
+        <g id="runoffMark" opacity="0">
+          <path d="M270 62 q16 8 16 22 q0 12 -12 12" stroke="#cf6a2e" stroke-width="2" fill="none"/>
+          <text x="292" y="112" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#cf6a2e">RUNOFF</text>
+        </g>
+
+        <text id="depthLbl" x="152" y="466" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#4fa3d9">—</text>
+      </svg>
+    </div>
+
+    <div class="ctrls">
+      <div class="field">
+        <label for="head">Sprinkler type</label>
+        <select id="head">
+          <option value="1.5">Fixed spray head — 1.5 in/hr</option>
+          <option value="0.45" selected>Rotary nozzle (MP) — 0.45 in/hr</option>
+          <option value="0.35">Gear rotor — 0.35 in/hr</option>
+          <option value="0.30">Impact head — 0.30 in/hr</option>
+          <option value="0.80">Oscillating hose sprinkler — 0.8 in/hr</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="soil">Soil</label>
+        <select id="soil">
+          <option value="clay" selected>Clay — typical Metro Detroit</option>
+          <option value="compact">Compacted clay — hard, heavy traffic</option>
+          <option value="loam">Loam — amended or topsoiled</option>
+          <option value="sand">Sandy — fast draining</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="runline">
+          <label for="mins" style="margin:0">Run time</label>
+          <div class="runval" id="minsOut">45<span>min</span></div>
+        </div>
+        <input type="range" id="mins" min="5" max="120" step="5" value="45">
+      </div>
+
+      <dl class="readout">
+        <div class="rrow"><dt>Water applied</dt><dd id="oApplied">—</dd></div>
+        <div class="rrow"><dt>Wetting front depth</dt><dd id="oDepth">—</dd></div>
+        <div class="rrow"><dt>Soil intake rate</dt><dd id="oIntake">—</dd></div>
+        <div class="rrow"><dt>Cycles to avoid runoff</dt><dd id="oCycles">—</dd></div>
+        <div class="rrow"><dt>Weekly total at 2×/week</dt><dd id="oWeek">—</dd></div>
+      </dl>
+
+      <div class="verdict v-info" id="verdict">
+        <strong>Move the slider</strong>
+        Pick your head type and drag run time. The blue front in the profile is how far down this single soak reaches.
+      </div>
+    </div>
+  </div>
+
+  <p class="how"><strong>How this works.</strong> Applied inches = precipitation rate × run time. Depth = applied inches × the soil's spread factor (clay ≈5 in of wetting per inch applied, loam ≈7, sand ≈12). Cycles = applied ÷ the most the soil can take in one pass before it starts running off. These are single-soak numbers from dry soil — if you watered two days ago the profile is already partly charged and you'll reach depth faster. The screwdriver is the real instrument. This is the estimate.</p>
+</section>
+
+<!-- ══ 2. TIME OF DAY ══════════════════════════ -->
+<section class="sec">
+  <div class="eyebrow">Timing</div>
+  <h2>When to water, and why it matters</h2>
+  <p class="lede">Two forces work against you at opposite ends of the day: evaporation burns water off before it soaks in, and overnight leaf wetness feeds fungus. There's one window where both are low.</p>
+
+  <div class="clock">
+    <div class="band">
+      <div class="band-t">4:00 – 9:00 AM</div>
+      <div class="band-b b-best">
+        <span class="tag">Best</span>
+        <h4>Water here</h4>
+        <p>Cool air, low wind, minimal evaporation loss. Blades dry within a couple hours of sunrise, so nothing stays wet long enough for disease. Municipal pressure is also at its highest before the neighborhood wakes up.</p>
+      </div>
+    </div>
+    <div class="band">
+      <div class="band-t">9:00 AM – 3:00 PM</div>
+      <div class="band-b b-ok">
+        <span class="tag">Wasteful</span>
+        <h4>You'll lose a third of it</h4>
+        <p>Heat and wind evaporate 20–35% of the output before it reaches soil. Not harmful — the myth about droplets scorching blades isn't real — just expensive. Fine for emergency rescue on a crunchy lawn.</p>
+      </div>
+    </div>
+    <div class="band">
+      <div class="band-t">3:00 – 7:00 PM</div>
+      <div class="band-b b-ok">
+        <span class="tag">Acceptable</span>
+        <h4>Workable if you must</h4>
+        <p>Evaporation drops off, but the clock is against you. Finish early enough that blades dry before sundown — otherwise you're in the next band without meaning to be.</p>
+      </div>
+    </div>
+    <div class="band">
+      <div class="band-t">7:00 PM – 4:00 AM</div>
+      <div class="band-b b-bad">
+        <span class="tag">Worst</span>
+        <h4>This is how lawns get fungus</h4>
+        <p>Almost zero evaporation loss, which is why it's tempting. But grass sits wet for 10–14 hours straight, and that's the exact condition brown patch, dollar spot, and pythium need. Summer humidity in southeast Michigan makes this a reliable way to lose turf.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 3. MOWING ══════════════════════════════ -->
+<section class="sec">
+  <div class="eyebrow">Cutting height</div>
+  <h2>Mow high, especially in July</h2>
+  <p class="lede">Blade height is the cheapest drought tool there is. Taller grass shades its own soil, drops root depth in proportion to leaf height, and cuts evaporation more than any schedule change will.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Grass</th><th>Spring / fall</th><th>Summer</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr class="hi">
+        <td><strong>Mixed lawn</strong> — typical SE Michigan</td>
+        <td class="num">3.0"</td><td class="num">3.5 – 4.0"</td>
+        <td class="note">Most Detroit-area lawns are a bluegrass/rye/fescue mix. Run the highest setting your mower has from June through August.</td>
+      </tr>
+      <tr><td>Kentucky bluegrass</td><td class="num">2.5 – 3.0"</td><td class="num">3.0 – 3.5"</td>
+        <td class="note">Spreads by rhizomes, so it fills its own thin spots. Handles dormancy well.</td></tr>
+      <tr><td>Tall fescue</td><td class="num">3.0 – 3.5"</td><td class="num">3.5 – 4.0"</td>
+        <td class="note">Deepest roots of the cool-season grasses. Best drought pick for new seed here.</td></tr>
+      <tr><td>Perennial ryegrass</td><td class="num">2.0 – 2.5"</td><td class="num">2.5 – 3.0"</td>
+        <td class="note">Germinates fast, no spreading habit. Bunch-type, so bare spots stay bare.</td></tr>
+      <tr><td>Fine fescue</td><td class="num">2.5 – 3.0"</td><td class="num">3.0 – 4.0"</td>
+        <td class="note">Shade tolerant, low water need. Hates traffic and heavy fertilizer.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="how"><strong>The one-third rule.</strong> Never remove more than a third of the blade in one pass. Cutting a 6" lawn down to 3" strips the food factory and forces the plant to spend root reserves regrowing leaf — it's the fastest way to undo a month of deep watering. If it got away from you, cut it in two passes a few days apart. <strong>Sharp blade.</strong> A dull blade tears rather than cuts, and the frayed tip loses water and invites disease; the whole lawn looks faintly white a day after mowing. Sharpen every 20–25 hours of run time. <strong>Leave the clippings.</strong> They're roughly 4% nitrogen and return about one free fertilizer application per season. They do not cause thatch.</p>
+</section>
+
+<!-- ══ 4. PROBE LOG ════════════════════════════ -->
+<section class="sec">
+  <div class="eyebrow">Ground truth</div>
+  <h2>The screwdriver test</h2>
+  <p class="lede">A long screwdriver or a piece of ⅜" rod pushed into the soil is a better moisture sensor than anything you can buy for under $200. Push it in the same spot each morning, before your watering window.</p>
+
+  <div class="probe-btns">
+    <button class="pb" data-d="2">Stops at 2"</button>
+    <button class="pb" data-d="3">Stops at 3"</button>
+    <button class="pb" data-d="4">Reaches 4"</button>
+    <button class="pb" data-d="6">Reaches 6"</button>
+    <button class="pb" data-d="8">Slides in 8"+</button>
+    <button class="pb clear" id="clearLog">Clear log</button>
+  </div>
+
+  <div class="log" id="log">
+    <div class="log-empty">No readings yet. Push the probe in, then tap the depth it reached — the log fills in from there and each entry tells you whether that was a water day or a skip.</div>
+  </div>
+
+  <p class="how"><strong>Reading it.</strong> Stops at 2–3" → the profile is dry, water today. Reaches 4" → borderline, water if the forecast is hot. Reaches 6" or slides in easily → skip, check again tomorrow. Probe in the morning, not at night — soil dries through the afternoon heat so an evening reading looks drier than what the grass actually has overnight, and you want the call made right before the sprinklers would run. Use one fixed spot in open lawn, away from a sprinkler head and away from edges, so you're comparing the same conditions each time. If it reads easy five days running, the issue is drainage, not schedule.</p>
+</section>
+
+<!-- ══ 5. CALIBRATION ══════════════════════════ -->
+<section class="sec">
+  <div class="eyebrow">Calibration</div>
+  <h2>Catch-can test</h2>
+  <p class="lede">Every number above is an estimate until you measure your own output. This takes twenty minutes once and makes the rest of it real.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Step</th><th>Do this</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Set 5–6 straight-sided cans — tuna cans are the standard, any flat-bottomed container works — across one zone. Put some near heads and some at the far edge of the throw.</td></tr>
+      <tr><td class="num">2</td><td>Run that zone exactly 15 minutes.</td></tr>
+      <tr><td class="num">3</td><td>Measure the depth in each can with a ruler. Average them.</td></tr>
+      <tr><td class="num">4</td><td>Multiply by 4. That's your precipitation rate in inches per hour, for real, in your yard.</td></tr>
+      <tr class="hi"><td class="num">5</td><td><strong>Check the spread.</strong> If the driest can holds less than half what the wettest holds, you have a coverage problem — a clogged nozzle, a tilted head, or wrong spacing. No schedule fixes that. Brown patches in an otherwise green lawn are almost always this, not underwatering.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="how"><strong>Why it beats the chart.</strong> Published precipitation rates assume design pressure and correct spacing. Real yards have long hose runs, partly clogged nozzles, mixed head types on one zone, and pressure that sags when the neighbor's system kicks on. A 15-minute test with six cans catches all of it at once.</p>
+</section>
+
+<!-- ══ 6. SEASON ═══════════════════════════════ -->
+<section class="sec">
+  <div class="eyebrow">Metro Detroit calendar</div>
+  <h2>The year</h2>
+
+  <div class="cal">
+    <div>
+      <h4>April – May</h4>
+      <p>Growth flush. Mow often, water little — spring rain usually covers it. Pre-emergent for crabgrass goes down when soil hits 55°F, roughly when forsythia drops its flowers.</p>
+    </div>
+    <div class="now">
+      <h4>June – August</h4>
+      <p>Heat and drought stress. Raise the mower to 3.5–4". Water deep, 2×/week, 1–1.5" total. No nitrogen — it pushes growth the roots can't feed. Brown ≠ dead: cool-season grass goes dormant to protect the crown.</p>
+    </div>
+    <div>
+      <h4>Aug 15 – Sep 15</h4>
+      <p>The overseeding window, and the best one of the year. Soil is still warm enough for fast germination, air is cooling, weed pressure has dropped. Core aerate first on clay, then seed into the holes.</p>
+    </div>
+    <div>
+      <h4>September – October</h4>
+      <p>Recovery. Best fertilizer application of the year goes down now — it builds roots rather than top growth. Keep watering new seed lightly and often until it's established, then switch back to deep and infrequent.</p>
+    </div>
+    <div>
+      <h4>November</h4>
+      <p>Final cut at 2.5–3" to reduce snow mold. Blow out irrigation lines before the first hard freeze. Leave shredded leaves on the lawn — they break down over winter and feed the soil.</p>
+    </div>
+    <div>
+      <h4>The rule that outranks all of it</h4>
+      <p>Don't flip-flop. Grass pushed out of dormancy and then abandoned back into it usually doesn't survive the second round. Once you commit to watering through a dry summer, hold it until fall rain takes over.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  Deep Soak · cool-season turf, southeast Michigan<br>
+  Estimates only. The screwdriver outranks the calculator.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── soil model ────────────────────────────
+  // spread   : inches of wetting per inch of water applied
+  // intake   : sustained infiltration rate, in/hr
+  // maxPass  : most it can absorb in one pass before runoff, inches
+  var SOILS = {
+    clay:    {label:"Clay",           spread:5,  intake:0.15, maxPass:0.25},
+    compact: {label:"Compacted clay", spread:4,  intake:0.10, maxPass:0.18},
+    loam:    {label:"Loam",           spread:7,  intake:0.35, maxPass:0.40},
+    sand:    {label:"Sandy",          spread:12, intake:0.75, maxPass:0.60}
+  };
+
+  var PX_PER_IN = 380 / 14;   // profile: 14 inches over 380px
+  var SURFACE_Y = 60;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var head = $("head"), soil = $("soil"), mins = $("mins");
+
+  function recalc(){
+    var rate   = parseFloat(head.value);
+    var s      = SOILS[soil.value];
+    var m      = parseInt(mins.value, 10);
+    var applied = rate * (m / 60);
+    var depth   = applied * s.spread;
+    var cycles  = Math.max(1, Math.ceil(applied / s.maxPass));
+    var week    = applied * 2;
+
+    $("minsOut").innerHTML = m + '<span>min</span>';
+    $("oApplied").textContent = applied.toFixed(2) + '"';
+    $("oDepth").textContent   = depth.toFixed(1) + '"';
+    $("oIntake").textContent  = s.intake.toFixed(2) + ' in/hr';
+    $("oCycles").textContent  = cycles === 1
+      ? "1 — no split needed"
+      : cycles + " × " + Math.round(m / cycles) + " min, 1 hr apart";
+    $("oWeek").textContent    = week.toFixed(2) + '" / week';
+
+    // profile
+    var drawDepth = Math.min(depth, 14);
+    var h = drawDepth * PX_PER_IN;
+    var wr = $("wetRect");
+    wr.setAttribute("height", h.toFixed(1));
+    wr.style.transition = "height .4s ease";
+    var wl = $("wetLine");
+    wl.setAttribute("y1", (SURFACE_Y + h).toFixed(1));
+    wl.setAttribute("y2", (SURFACE_Y + h).toFixed(1));
+    wl.style.transition = "all .4s ease";
+    $("depthLbl").textContent = "wetting front  " + depth.toFixed(1) + '" deep';
+    $("runoffMark").setAttribute("opacity", rate > s.intake * 2.2 ? "1" : "0");
+
+    // verdict
+    var v = $("verdict"), cls = "v-info", title = "", body = "";
+
+    if (depth < 3){
+      cls = "v-warn";
+      title = "Too shallow";
+      body = "This only wets the top " + depth.toFixed(1) + '". Roots follow water, so they stay right there in the surface inch and cook the first hot week. Add run time — you want the front reaching 4–6".';
+    } else if (depth <= 7){
+      cls = "v-good";
+      title = "In the zone";
+      body = "The front lands at " + depth.toFixed(1) + '", right in the 4–6" root band. This is what trains roots downward. Run it every 2–3 days, not daily.';
+    } else if (depth <= 10){
+      cls = "v-good";
+      title = "Deep — fine occasionally";
+      body = "At " + depth.toFixed(1) + '" you\'re past the root zone. Not wasted exactly, but the extra is heading for groundwater. Good once a month to flush salts; trim it back otherwise.';
+    } else {
+      cls = "v-warn";
+      title = "Overshooting";
+      body = 'The front is past ' + depth.toFixed(1) + '" — well below anything the grass can reach. That water is gone, and saturated soil suffocates roots. Cut the run time roughly in half.';
+    }
+
+    if (cycles > 1){
+      body += " Heads up: at " + rate.toFixed(2) + " in/hr into " +
+              s.label.toLowerCase() + " that takes " + s.intake.toFixed(2) +
+              " in/hr, you'll get runoff before the cycle finishes. Split it into " +
+              cycles + " passes of " + Math.round(m / cycles) +
+              " minutes, an hour apart. Counts as one watering.";
+    }
+
+    v.className = "verdict " + cls;
+    v.innerHTML = "<strong>" + title + "</strong>" + body;
+  }
+
+  head.addEventListener("change", recalc);
+  soil.addEventListener("change", recalc);
+  mins.addEventListener("input", recalc);
+
+  // ── probe log ─────────────────────────────
+  var KEY = "deepsoak:probe", mem = null, entries = [];
+
+  function read(){
+    try {
+      return window.storage.get(KEY).then(function(r){
+        return r ? JSON.parse(r.value) : [];
+      }).catch(function(){ return mem || []; });
+    } catch(e){
+      return Promise.resolve(mem || []);
+    }
+  }
+  function write(v){
+    mem = v;
+    try { window.storage.set(KEY, JSON.stringify(v)).catch(function(){}); }
+    catch(e){ /* running outside Claude — session only */ }
+  }
+
+  function verdictFor(d){
+    if (d <= 3) return {t:"Water today",  c:"call-water"};
+    if (d === 4) return {t:"Borderline",  c:"call-water"};
+    return {t:"Skip", c:"call-skip"};
+  }
+
+  function render(){
+    var el = $("log");
+    if (!entries.length){
+      el.innerHTML = '<div class="log-empty">No readings yet. Push the probe in, then tap the depth it reached — the log fills in from there and each entry tells you whether that was a water day or a skip.</div>';
+      return;
+    }
+    el.innerHTML = entries.slice(0, 14).map(function(e){
+      var v = verdictFor(e.depth);
+      return '<div class="log-row"><span class="d">' + e.date +
+             '</span><span class="depth">' + (e.depth >= 8 ? '8"+' : e.depth + '"') +
+             '</span><span class="call ' + v.c + '">' + v.t + '</span></div>';
+    }).join("");
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".pb[data-d]"), function(b){
+    b.addEventListener("click", function(){
+      entries.unshift({
+        date: new Date().toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}),
+        depth: parseInt(b.dataset.d, 10)
+      });
+      entries = entries.slice(0, 30);
+      write(entries);
+      render();
+    });
+  });
+
+  $("clearLog").addEventListener("click", function(){
+    entries = [];
+    write(entries);
+    render();
+  });
+
+  read().then(function(v){ entries = Array.isArray(v) ? v : []; render(); });
+
+  recalc();
+})();
+</script>
+</body>
+</html>
