@@ -291,21 +291,19 @@ input[type=range]::-moz-range-thumb{
 
     <div class="ctrls">
       <div class="field">
-        <label for="head">Sprinkler type</label>
+        <label for="head">Zone</label>
         <select id="head">
-          <optgroup label="Aiper IrriSense 2 — 6.9 GPM">
-            <option value="0.14" selected>Full coverage, ~4,800 sq ft — 0.14 in/hr</option>
-            <option value="0.20">Wide zone, ~3,300 sq ft — 0.20 in/hr</option>
-            <option value="0.28">Half zone, ~2,400 sq ft — 0.28 in/hr</option>
-            <option value="0.40">Quarter zone, ~1,650 sq ft — 0.40 in/hr</option>
-            <option value="0.55">Narrow strip, ~1,200 sq ft — 0.55 in/hr</option>
-          </optgroup>
-          <option value="1.5">Fixed spray head — 1.5 in/hr</option>
-          <option value="0.45">Rotary nozzle (MP) — 0.45 in/hr</option>
-          <option value="0.35">Gear rotor — 0.35 in/hr</option>
-          <option value="0.30">Impact head — 0.30 in/hr</option>
-          <option value="0.80">Oscillating hose sprinkler — 0.8 in/hr</option>
+          <option value="2116" selected>Front yard — 2,116 sq ft</option>
+          <option value="1144">Back yard — 1,144 sq ft</option>
+          <option value="3260">Whole lawn at once — 3,260 sq ft</option>
+          <option value="custom">Custom area…</option>
         </select>
+      </div>
+
+      <div class="field" id="customWrap" style="display:none">
+        <label for="customArea">Square feet</label>
+        <input type="number" id="customArea" value="2000" min="100" max="10000" step="50"
+               style="width:100%;background:var(--soil-2);color:var(--bone);border:1px solid var(--line);border-radius:3px;padding:11px 12px;font-size:.9rem;font-family:var(--ff-m)">
       </div>
 
       <div class="field">
@@ -323,10 +321,11 @@ input[type=range]::-moz-range-thumb{
           <label for="mins" style="margin:0">Run time</label>
           <div class="runval" id="minsOut">45<span>min</span></div>
         </div>
-        <input type="range" id="mins" min="5" max="300" step="5" value="200">
+        <input type="range" id="mins" min="5" max="300" step="5" value="95">
       </div>
 
       <dl class="readout">
+        <div class="rrow"><dt>Precipitation rate</dt><dd id="oRate">—</dd></div>
         <div class="rrow"><dt>Water applied</dt><dd id="oApplied">—</dd></div>
         <div class="rrow"><dt>Wetting front depth</dt><dd id="oDepth">—</dd></div>
         <div class="rrow"><dt>Soil intake rate</dt><dd id="oIntake">—</dd></div>
@@ -537,7 +536,14 @@ input[type=range]::-moz-range-thumb{
   var head = $("head"), soil = $("soil"), mins = $("mins");
 
   function recalc(){
-    var rate   = parseFloat(head.value);
+    var isCustom = head.value === "custom";
+    document.getElementById("customWrap").style.display = isCustom ? "" : "none";
+    var area = isCustom
+      ? Math.max(100, parseInt(document.getElementById("customArea").value, 10) || 2000)
+      : parseFloat(head.value);
+
+    var GPM  = 6.87;                       // Aiper IrriSense 2, 26 L/min @ 45 psi
+    var rate = 96.3 * GPM / area;          // in/hr
     var s      = SOILS[soil.value];
     var m      = parseInt(mins.value, 10);
     var applied = rate * (m / 60);
@@ -548,6 +554,7 @@ input[type=range]::-moz-range-thumb{
     $("minsOut").innerHTML = m >= 60
       ? (m/60).toFixed(m % 60 === 0 ? 0 : 1) + '<span>hr</span>'
       : m + '<span>min</span>';
+    $("oRate").textContent    = rate.toFixed(2) + ' in/hr';
     $("oApplied").textContent = applied.toFixed(2) + '"';
     $("oDepth").textContent   = depth.toFixed(1) + '"';
     $("oIntake").textContent  = s.intake.toFixed(2) + ' in/hr';
@@ -603,6 +610,7 @@ input[type=range]::-moz-range-thumb{
   }
 
   head.addEventListener("change", recalc);
+  document.getElementById("customArea").addEventListener("input", recalc);
   soil.addEventListener("change", recalc);
   mins.addEventListener("input", recalc);
 
